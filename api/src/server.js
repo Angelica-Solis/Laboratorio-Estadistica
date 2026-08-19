@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
+const estadisticaRoutes = require("./routes/estadisticaRoutes");
+
 const app = express();
 
 app.use(cors());
@@ -12,6 +14,8 @@ app.get("/", (req, res) => {
         mensaje: "API del Laboratorio de Estadística funcionando"
     });
 });
+
+app.use("/api/estadisticas", estadisticaRoutes);
 
 const PORT = process.env.PORT || 3000;
 
