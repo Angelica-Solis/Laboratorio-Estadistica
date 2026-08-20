@@ -52,6 +52,12 @@ function App() {
     const [hipotesis, setHipotesis] = useState(null);
 
     // =========================
+    // INTEGRANTES
+    // =========================
+
+    const integrantes = ["María Angélica Solís", "Dereck Alonso Jiménez", "Dilan Sanchez", "Abraham"];
+
+    // =========================
     // ESTADO DE CARGA
     // =========================
 
@@ -180,7 +186,7 @@ function App() {
             <div className="app">
                 <header className="navbar">
                     <div className="logo">
-                        📊 Laboratorio de Estadística
+                         Laboratorio de Estadística
                     </div>
                 </header>
 
@@ -210,7 +216,7 @@ function App() {
             <header className="navbar">
 
                 <div className="logo">
-                    <span>📊</span>
+                    <span></span>
                     Laboratorio de Estadística
                 </div>
 
@@ -245,62 +251,74 @@ function App() {
                 ================================================= */}
 
                 {seccion === "inicio" && (
-                    <section className="hero">
+                    <>
+                        <section className="hero">
 
-                        <div className="hero-text">
+                            <div className="hero-text">
 
-                            <span className="etiqueta">
-                                ANÁLISIS ESTADÍSTICO
-                            </span>
+                                <span className="etiqueta">
+                                    ANÁLISIS ESTADÍSTICO
+                                </span>
 
-                            <h1>
-                                Laboratorio de
-                                <br />
-                                <strong>Estadística</strong>
-                            </h1>
+                                <h1>
+                                    Laboratorio de
+                                    <br />
+                                    <strong>Estadística</strong>
+                                </h1>
 
-                            <p>
-                                Análisis estadístico de una población de
-                                40 personas mediante cálculos, pruebas
-                                estadísticas y visualizaciones.
-                            </p>
+                                <p>
+                                    Análisis estadístico de una población de
+                                    40 personas mediante cálculos, pruebas
+                                    estadísticas y visualizaciones.
+                                </p>
 
-                            <button
-                                className="boton-principal"
-                                onClick={() => setSeccion("interactiva")}
-                            >
-                                Ver resultados →
-                            </button>
-
-                        </div>
-
-                        <div className="hero-card">
-
-                            <div className="hero-icon">
-                                📈
-                            </div>
-
-                            <h2>40 personas</h2>
-
-                            <p>Datos analizados</p>
-
-                            <div className="mini-stats">
-
-                                <div>
-                                    <strong>20</strong>
-                                    <span>Hombres</span>
-                                </div>
-
-                                <div>
-                                    <strong>20</strong>
-                                    <span>Mujeres</span>
-                                </div>
+                                <button
+                                    className="boton-principal"
+                                    onClick={() => setSeccion("interactiva")}
+                                >
+                                    Ver resultados →
+                                </button>
 
                             </div>
 
-                        </div>
+                            <div className="hero-card-col">
 
-                    </section>
+                                <div className="hero-card">
+
+                                    <div className="hero-icon">
+                                        📈
+                                    </div>
+
+                                    <h2>40 personas</h2>
+
+                                    <p>Datos analizados</p>
+
+                                    <div className="mini-stats">
+
+                                        <div>
+                                            <strong>20</strong>
+                                            <span>Hombres</span>
+                                        </div>
+
+                                        <div>
+                                            <strong>20</strong>
+                                            <span>Mujeres</span>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <p className="hero-card-firma">
+                                    {integrantes.map((nombre, indice) => (
+                                        <span key={indice}>{nombre}</span>
+                                    ))}
+                                </p>
+
+                            </div>
+
+                        </section>
+                    </>
                 )}
 
                 {/* =================================================
