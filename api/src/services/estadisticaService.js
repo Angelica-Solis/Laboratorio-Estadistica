@@ -2,7 +2,10 @@ const { sql, poolPromise } = require("../database/connection");
 const { jStat } = require("jstat");
 
 
+// =====================================================
 // a) Promedio de estatura
+// =====================================================
+
 async function promedioEstatura() {
     const pool = await poolPromise;
 
@@ -17,7 +20,11 @@ async function promedioEstatura() {
     return result.recordset[0];
 }
 
+
+// =====================================================
 // b) Promedio de peso
+// =====================================================
+
 async function promedioPeso() {
     const pool = await poolPromise;
 
@@ -32,7 +39,11 @@ async function promedioPeso() {
     return result.recordset[0];
 }
 
+
+// =====================================================
 // c) Hipertensión
+// =====================================================
+
 async function hipertension() {
     const pool = await poolPromise;
 
@@ -42,12 +53,19 @@ async function hipertension() {
 
             SUM(
                 CASE
-                    WHEN CAST(LEFT(Presion_arterial, CHARINDEX('/', Presion_arterial) - 1) AS INT) >= 140
-                      OR CAST(SUBSTRING(
+                    WHEN CAST(
+                        LEFT(
+                            Presion_arterial,
+                            CHARINDEX('/', Presion_arterial) - 1
+                        ) AS INT
+                    ) >= 140
+                    OR CAST(
+                        SUBSTRING(
                             Presion_arterial,
                             CHARINDEX('/', Presion_arterial) + 1,
                             LEN(Presion_arterial)
-                          ) AS INT) >= 90
+                        ) AS INT
+                    ) >= 90
                     THEN 1
                     ELSE 0
                 END
@@ -56,14 +74,21 @@ async function hipertension() {
             SUM(
                 CASE
                     WHEN Sexo = 'M'
-                     AND (
-                        CAST(LEFT(Presion_arterial, CHARINDEX('/', Presion_arterial) - 1) AS INT) >= 140
-                        OR CAST(SUBSTRING(
-                            Presion_arterial,
-                            CHARINDEX('/', Presion_arterial) + 1,
-                            LEN(Presion_arterial)
-                        ) AS INT) >= 90
-                     )
+                    AND (
+                        CAST(
+                            LEFT(
+                                Presion_arterial,
+                                CHARINDEX('/', Presion_arterial) - 1
+                            ) AS INT
+                        ) >= 140
+                        OR CAST(
+                            SUBSTRING(
+                                Presion_arterial,
+                                CHARINDEX('/', Presion_arterial) + 1,
+                                LEN(Presion_arterial)
+                            ) AS INT
+                        ) >= 90
+                    )
                     THEN 1
                     ELSE 0
                 END
@@ -72,14 +97,21 @@ async function hipertension() {
             SUM(
                 CASE
                     WHEN Sexo = 'F'
-                     AND (
-                        CAST(LEFT(Presion_arterial, CHARINDEX('/', Presion_arterial) - 1) AS INT) >= 140
-                        OR CAST(SUBSTRING(
-                            Presion_arterial,
-                            CHARINDEX('/', Presion_arterial) + 1,
-                            LEN(Presion_arterial)
-                        ) AS INT) >= 90
-                     )
+                    AND (
+                        CAST(
+                            LEFT(
+                                Presion_arterial,
+                                CHARINDEX('/', Presion_arterial) - 1
+                            ) AS INT
+                        ) >= 140
+                        OR CAST(
+                            SUBSTRING(
+                                Presion_arterial,
+                                CHARINDEX('/', Presion_arterial) + 1,
+                                LEN(Presion_arterial)
+                            ) AS INT
+                        ) >= 90
+                    )
                     THEN 1
                     ELSE 0
                 END
@@ -93,25 +125,37 @@ async function hipertension() {
     return {
         totalPersonas: datos.totalPersonas,
         hipertensos: datos.hipertensos,
-        porcentaje: (datos.hipertensos / datos.totalPersonas) * 100,
+        porcentaje:
+            (datos.hipertensos / datos.totalPersonas) * 100,
         hipertensosHombres: datos.hipertensosHombres,
         hipertensosMujeres: datos.hipertensosMujeres
     };
 }
 
+
+// =====================================================
 // d) Relación entre hipertensión y peso
+// =====================================================
+
 async function relacionHipertensionPeso() {
     const pool = await poolPromise;
 
     const result = await pool.request().query(`
         SELECT
             CASE
-                WHEN CAST(LEFT(Presion_arterial, CHARINDEX('/', Presion_arterial) - 1) AS INT) >= 140
-                  OR CAST(SUBSTRING(
+                WHEN CAST(
+                    LEFT(
+                        Presion_arterial,
+                        CHARINDEX('/', Presion_arterial) - 1
+                    ) AS INT
+                ) >= 140
+                OR CAST(
+                    SUBSTRING(
                         Presion_arterial,
                         CHARINDEX('/', Presion_arterial) + 1,
                         LEN(Presion_arterial)
-                      ) AS INT) >= 90
+                    ) AS INT
+                ) >= 90
                 THEN 'Hipertensión'
                 ELSE 'Sin hipertensión'
             END AS estado,
@@ -123,12 +167,19 @@ async function relacionHipertensionPeso() {
 
         GROUP BY
             CASE
-                WHEN CAST(LEFT(Presion_arterial, CHARINDEX('/', Presion_arterial) - 1) AS INT) >= 140
-                  OR CAST(SUBSTRING(
+                WHEN CAST(
+                    LEFT(
+                        Presion_arterial,
+                        CHARINDEX('/', Presion_arterial) - 1
+                    ) AS INT
+                ) >= 140
+                OR CAST(
+                    SUBSTRING(
                         Presion_arterial,
                         CHARINDEX('/', Presion_arterial) + 1,
                         LEN(Presion_arterial)
-                      ) AS INT) >= 90
+                    ) AS INT
+                ) >= 90
                 THEN 'Hipertensión'
                 ELSE 'Sin hipertensión'
             END
@@ -137,7 +188,11 @@ async function relacionHipertensionPeso() {
     return result.recordset;
 }
 
+
+// =====================================================
 // e) Sobrepeso vs horas de trabajo y profesión
+// =====================================================
+
 async function relacionSobrepesoTrabajo() {
     const pool = await poolPromise;
 
@@ -157,15 +212,58 @@ async function relacionSobrepesoTrabajo() {
 
         FROM Personas
 
-        GROUP BY Trabajo, Horas_trabajo_dia
+        GROUP BY
+            Trabajo,
+            Horas_trabajo_dia
 
-        ORDER BY Trabajo, Horas_trabajo_dia
+        ORDER BY
+            Trabajo,
+            Horas_trabajo_dia
     `);
 
     return result.recordset;
 }
+
+
+// =====================================================
+// Datos generales de la población
+// =====================================================
+
+async function datosPoblacion() {
+    const pool = await poolPromise;
+
+    const result = await pool.request().query(`
+        SELECT
+            COUNT(*) AS totalPersonas,
+
+            SUM(
+                CASE
+                    WHEN Sexo = 'M' THEN 1
+                    ELSE 0
+                END
+            ) AS hombres,
+
+            SUM(
+                CASE
+                    WHEN Sexo = 'F' THEN 1
+                    ELSE 0
+                END
+            ) AS mujeres
+
+        FROM Personas
+    `);
+
+    return result.recordset[0];
+}
+
+
+// =====================================================
 // f) Intervalo de confianza para la diferencia de estaturas
-async function intervaloConfianzaEstatura(nivelConfianza = 0.95) {
+// =====================================================
+
+async function intervaloConfianzaEstatura(
+    nivelConfianza = 0.95
+) {
     const pool = await poolPromise;
 
     const result = await pool.request().query(`
@@ -179,8 +277,13 @@ async function intervaloConfianzaEstatura(nivelConfianza = 0.95) {
         GROUP BY Sexo
     `);
 
-    const hombres = result.recordset.find(x => x.Sexo === "M");
-    const mujeres = result.recordset.find(x => x.Sexo === "F");
+    const hombres = result.recordset.find(
+        x => x.Sexo === "M"
+    );
+
+    const mujeres = result.recordset.find(
+        x => x.Sexo === "F"
+    );
 
     const nHombres = Number(hombres.n);
     const nMujeres = Number(mujeres.n);
@@ -192,52 +295,75 @@ async function intervaloConfianzaEstatura(nivelConfianza = 0.95) {
     const sdMujeres = Number(mujeres.desviacion);
 
     // Diferencia: hombres - mujeres
-    const diferencia = mediaHombres - mediaMujeres;
+
+    const diferencia =
+        mediaHombres - mediaMujeres;
 
     // Error estándar de Welch
+
     const errorEstandar = Math.sqrt(
         (sdHombres ** 2 / nHombres) +
         (sdMujeres ** 2 / nMujeres)
     );
 
     // Grados de libertad de Welch
+
     const numerador =
-        ((sdHombres ** 2 / nHombres) +
-            (sdMujeres ** 2 / nMujeres)) ** 2;
+        (
+            (sdHombres ** 2 / nHombres) +
+            (sdMujeres ** 2 / nMujeres)
+        ) ** 2;
 
     const denominador =
-        ((sdHombres ** 2 / nHombres) ** 2 / (nHombres - 1)) +
-        ((sdMujeres ** 2 / nMujeres) ** 2 / (nMujeres - 1));
+        (
+            (sdHombres ** 2 / nHombres) ** 2 /
+            (nHombres - 1)
+        ) +
+        (
+            (sdMujeres ** 2 / nMujeres) ** 2 /
+            (nMujeres - 1)
+        );
 
-    const gradosLibertad = numerador / denominador;
+    const gradosLibertad =
+        numerador / denominador;
 
     // Alfa
-    const alfa = 1 - nivelConfianza;
+
+    const alfa =
+        1 - nivelConfianza;
 
     // Valor crítico bilateral
+
     const tCritico = jStat.studentt.inv(
         1 - alfa / 2,
         gradosLibertad
     );
 
-    const margenError = tCritico * errorEstandar;
+    const margenError =
+        tCritico * errorEstandar;
 
-    const limiteInferior = diferencia - margenError;
-    const limiteSuperior = diferencia + margenError;
+    const limiteInferior =
+        diferencia - margenError;
+
+    const limiteSuperior =
+        diferencia + margenError;
 
     return {
         nivelConfianza: nivelConfianza * 100,
         alfa,
+
         hombres: {
             n: nHombres,
             promedio: mediaHombres,
             desviacion: sdHombres
         },
+
         mujeres: {
             n: nMujeres,
             promedio: mediaMujeres,
             desviacion: sdMujeres
         },
+
         diferencia,
         errorEstandar,
         gradosLibertad,
@@ -249,8 +375,14 @@ async function intervaloConfianzaEstatura(nivelConfianza = 0.95) {
 }
 
 
+// =====================================================
 // g) Prueba de hipótesis del IMC
-async function pruebaHipotesisIMC(imcPoblacional = 25, nivelSignificancia = 0.05) {
+// =====================================================
+
+async function pruebaHipotesisIMC(
+    imcPoblacional = 25,
+    nivelSignificancia = 0.05
+) {
     const pool = await poolPromise;
 
     const result = await pool.request().query(`
@@ -265,60 +397,105 @@ async function pruebaHipotesisIMC(imcPoblacional = 25, nivelSignificancia = 0.05
     const datos = result.recordset[0];
 
     const n = Number(datos.n);
-    const mediaMuestral = Number(datos.media);
-    const desviacion = Number(datos.desviacion);
 
-    // H0: μ = IMC poblacional
-    // H1: μ ≠ IMC poblacional
+    const mediaMuestral =
+        Number(datos.media);
 
-    const errorEstandar = desviacion / Math.sqrt(n);
+    const desviacion =
+        Number(datos.desviacion);
 
-    const t = (mediaMuestral - imcPoblacional) / errorEstandar;
+    // Prueba de una cola (unilateral izquierda)
+    //
+    // H0: μ >= IMC poblacional
+    // H1: μ < IMC poblacional
 
-    const gradosLibertad = n - 1;
+    const errorEstandar =
+        desviacion / Math.sqrt(n);
 
-    // Prueba bilateral
+    const z =
+        (mediaMuestral - imcPoblacional) /
+        errorEstandar;
+
+    const gradosLibertad =
+        n - 1;
+
+    // P-value
+
     const pValue =
-        2 * (1 - jStat.studentt.cdf(Math.abs(t), gradosLibertad));
+        jStat.normal.cdf(z, 0, 1);
 
-    const tCritico = jStat.studentt.inv(
-        1 - nivelSignificancia / 2,
-        gradosLibertad
-    );
+    // Z crítico
 
-    const rechazarHipotesis = Math.abs(t) > tCritico;
+    const zCritico =
+        jStat.normal.inv(
+            nivelSignificancia,
+            0,
+            1
+        );
+
+    // Decisión
+
+    const rechazarHipotesis =
+        z < zCritico;
 
     return {
-        hipotesisNula: `μ = ${imcPoblacional}`,
-        hipotesisAlternativa: `μ ≠ ${imcPoblacional}`,
+
+        hipotesisNula:
+            `μ ≥ ${imcPoblacional}`,
+
+        hipotesisAlternativa:
+            `μ < ${imcPoblacional}`,
+
+        tipoPrueba:
+            "unilateral izquierda (Z, muestra grande)",
 
         imcPoblacional,
+
         nivelSignificancia,
 
         n,
+
         mediaMuestral,
+
         desviacion,
+
         errorEstandar,
 
-        estadisticoT: t,
+        estadisticoZ: z,
+
         gradosLibertad,
 
-        tCritico,
+        zCritico,
+
         pValue,
 
         rechazarHipotesis,
 
-        conclusion: rechazarHipotesis
-            ? "Se rechaza la hipótesis nula."
-            : "No se rechaza la hipótesis nula."
+        conclusion:
+            rechazarHipotesis
+
+                ? `Se rechaza H0: con un ${
+                    nivelSignificancia * 100
+                }% de significancia hay evidencia suficiente de que el IMC promedio de la muestra es menor (mejor) que el poblacional de ${imcPoblacional}.`
+
+                : `No se rechaza H0: con un ${
+                    nivelSignificancia * 100
+                }% de significancia NO hay evidencia suficiente de que el IMC promedio de la muestra sea menor (mejor) que el poblacional de ${imcPoblacional}.`
     };
 }
+
+
+// =====================================================
+// EXPORTACIONES
+// =====================================================
+
 module.exports = {
     promedioEstatura,
     promedioPeso,
     hipertension,
     relacionHipertensionPeso,
     relacionSobrepesoTrabajo,
+    datosPoblacion,
     intervaloConfianzaEstatura,
     pruebaHipotesisIMC
 };
