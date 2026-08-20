@@ -23,6 +23,33 @@ ChartJS.register(
 
 const API = "http://localhost:3000/api/estadisticas";
 
+// =====================================================
+// Estilos reutilizables para los bloques DATOS / FÓRMULA / PROCEDIMIENTO
+// (colores explícitos para que el texto se vea sobre fondo oscuro,
+// sin depender de estilos heredados de App.css)
+// =====================================================
+
+const cajaEstilo = {
+    background: "#ffffff",
+    borderRadius: "18px",
+    padding: "30px",
+    marginBottom: "20px",
+    boxShadow: "0 8px 30px rgba(31, 41, 55, 0.06)",
+    color: "#202536"
+};
+
+const tituloCajaEstilo = {
+    display: "block",
+    fontWeight: 800,
+    letterSpacing: "2px",
+    fontSize: "13px",
+    color: "#4f46e5",
+    marginBottom: "16px"
+};
+
+const textoClaro = { color: "#596174" };
+const textoFuerte = { color: "#202536" };
+
 function App() {
     const [seccion, setSeccion] = useState("inicio");
 
@@ -401,67 +428,209 @@ function App() {
 
                         <p className="descripcion">
                             Determine si el promedio de IMC de la muestra
-                            es diferente al promedio poblacional de
-                            <strong> 25</strong>, utilizando un nivel de
-                            significancia del <strong>5%</strong>.
+                            es <strong>mejor</strong> (menor) que el promedio
+                            poblacional de <strong>25</strong>, utilizando un
+                            nivel de significancia del <strong>5%</strong>
+                            (prueba unilateral izquierda: H0: μ ≥ 25 vs
+                            H1: μ &lt; 25).
                         </p>
 
                         {hipotesis && (
-                            <div className="resultado-principal">
+                            <>
 
-                                <div
-                                    className={
-                                        hipotesis.rechazarHipotesis
-                                            ? "decision rechazar"
-                                            : "decision aceptar"
-                                    }
-                                >
+                                {/* ==========================================
+                                    DATOS
+                                ========================================== */}
+{/* ==========================================
+    DATOS
+========================================== */}
 
-                                    <span>
-                                        Conclusión
+<div style={cajaEstilo}>
+    <span style={tituloCajaEstilo}>
+        DATOS
+    </span>
+
+    <div className="grid-resultados">
+
+        <Dato
+            titulo="Promedio poblacional (μ)"
+            valor={hipotesis.imcPoblacional}
+        />
+
+        <Dato
+            titulo="Nivel de significancia (α)"
+            valor={hipotesis.nivelSignificancia}
+        />
+
+        <Dato
+            titulo="Tamaño de la muestra (n)"
+            valor={hipotesis.n}
+        />
+
+        <Dato
+            titulo="Media muestral (x̄)"
+            valor={hipotesis.mediaMuestral.toFixed(4)}
+        />
+
+        <Dato
+            titulo="Desviación estándar (s)"
+            valor={hipotesis.desviacion.toFixed(4)}
+        />
+
+        <Dato
+            titulo="Grados de libertad (gl)"
+            valor={hipotesis.gradosLibertad}
+        />
+
+        <Dato
+            titulo="H0"
+            valor={hipotesis.hipotesisNula}
+        />
+
+        <Dato
+            titulo="H1"
+            valor={hipotesis.hipotesisAlternativa}
+        />
+
+    </div>
+</div>
+
+                                {/* ==========================================
+                                    FÓRMULA
+                                ========================================== */}
+
+                                <div style={cajaEstilo}>
+                                    <span style={tituloCajaEstilo}>
+                                        FÓRMULA
                                     </span>
 
-                                    <strong>
-                                        {hipotesis.conclusion}
-                                    </strong>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            gap: "10px",
+                                            fontSize: "1.4rem",
+                                            fontFamily: "Georgia, serif",
+                                            padding: "8px 0",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+                                        <span>Z</span>
+                                        <span>=</span>
+                                        <span
+                                            style={{
+                                                display: "inline-flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                lineHeight: 1.3,
+                                                color: "#4f46e5"
+                                            }}
+                                        >
+                                            <span
+                                                style={{
+                                                    padding: "0 6px",
+                                                    borderBottom: "2px solid #4f46e5",
+                                                    color: "#4f46e5"
+                                                }}
+                                            >
+                                                x̄ − μ
+                                            </span>
+                                            <span style={{ padding: "0 6px", color: "#4f46e5" }}>
+                                                s / √n
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* ==========================================
+                                    PROCEDIMIENTO
+                                ========================================== */}
+
+                                <div style={cajaEstilo}>
+                                    <span style={tituloCajaEstilo}>
+                                        PROCEDIMIENTO
+                                    </span>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.15rem",
+                                            color: "#4f46e5",
+                                            textAlign: "center"
+                                        }}
+                                    >
+                                        <div>
+                                            Z = ({hipotesis.mediaMuestral.toFixed(4)}
+                                            {" − "}
+                                            {hipotesis.imcPoblacional}) / (
+                                            {hipotesis.desviacion.toFixed(4)}
+                                            {" / √"}
+                                            {hipotesis.n})
+                                        </div>
+
+                                        <div>
+                                            Z = {(
+                                                hipotesis.mediaMuestral -
+                                                hipotesis.imcPoblacional
+                                            ).toFixed(4)} / {hipotesis.errorEstandar
+                                                ? hipotesis.errorEstandar.toFixed(4)
+                                                : (
+                                                    hipotesis.desviacion /
+                                                    Math.sqrt(hipotesis.n)
+                                                ).toFixed(4)}
+                                        </div>
+
+                                        <div style={{ fontWeight: 700 }}>
+                                            Z = {hipotesis.estadisticoZ.toFixed(4)}
+                                        </div>
+                                    </div>
+
+                                    <p style={{ marginTop: "16px", ...textoClaro }}>
+                                        Z = {hipotesis.estadisticoZ.toFixed(4)}{" "}
+                                        {hipotesis.rechazarHipotesis
+                                            ? "es menor que"
+                                            : "no es menor que"}{" "}
+                                        Z crítico ={" "}
+                                        <strong style={textoFuerte}>
+                                            {hipotesis.zCritico.toFixed(4)}
+                                        </strong>
+                                    </p>
+                                </div>
+
+                                <div className="resultado-principal">
+
+                                    <div
+                                        className={
+                                            hipotesis.rechazarHipotesis
+                                                ? "decision rechazar"
+                                                : "decision aceptar"
+                                        }
+                                    >
+
+                                        <span>
+                                            {hipotesis.rechazarHipotesis
+                                                ? "Se rechaza H0"
+                                                : "No se rechaza H0"}
+                                        </span>
+
+                                        <strong>
+                                            {hipotesis.conclusion}
+                                        </strong>
+
+                                        <p style={{ margin: "10px 0 0", fontSize: "14px" }}>
+                                            valor p = {hipotesis.pValue.toFixed(4)}
+                                        </p>
+
+                                    </div>
 
                                 </div>
 
-                                <div className="grid-resultados">
-
-                                    <Dato
-                                        titulo="IMC poblacional"
-                                        valor={hipotesis.imcPoblacional}
-                                    />
-
-                                    <Dato
-                                        titulo="Media muestral"
-                                        valor={hipotesis.mediaMuestral.toFixed(4)}
-                                    />
-
-                                    <Dato
-                                        titulo="Desviación estándar"
-                                        valor={hipotesis.desviacion.toFixed(4)}
-                                    />
-
-                                    <Dato
-                                        titulo="Estadístico t"
-                                        valor={hipotesis.estadisticoT.toFixed(4)}
-                                    />
-
-                                    <Dato
-                                        titulo="Valor p"
-                                        valor={hipotesis.pValue.toFixed(4)}
-                                    />
-
-                                    <Dato
-                                        titulo="t crítico"
-                                        valor={hipotesis.tCritico.toFixed(4)}
-                                    />
-
-                                </div>
-
-                            </div>
+                            </>
                         )}
 
                     </section>
@@ -892,8 +1061,8 @@ function App() {
                                     </strong>
 
                                     <p>
-                                        t ={" "}
-                                        {hipotesis.estadisticoT.toFixed(4)}
+                                        Z ={" "}
+                                        {hipotesis.estadisticoZ.toFixed(4)}
                                         {"   |   "}
                                         p ={" "}
                                         {hipotesis.pValue.toFixed(4)}
