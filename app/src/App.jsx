@@ -24,8 +24,6 @@ ChartJS.register(
 const API = "http://localhost:3000/api/estadisticas";
 
 // Estilos reutilizables para los bloques DATOS / FÓRMULA / PROCEDIMIENTO
-// (colores explícitos para que el texto se vea sobre fondo oscuro,
-// sin depender de estilos heredados de App.css)
 
 
 const cajaEstilo = {
@@ -799,9 +797,7 @@ function App() {
                                 </div>
 
 
-                                {/* ==========================================
-                    T CRÍTICO
-                ========================================== */}
+                                {/*T CRÍTICO*/}
 
                                 <div style={cajaEstilo}>
 
@@ -842,9 +838,7 @@ function App() {
                                 </div>
 
 
-                                {/* ==========================================
-                    VARIANZA COMBINADA
-                ========================================== */}
+                                {/* VARIANZA COMBINADA*/}
 
                                 <div style={cajaEstilo}>
 
@@ -974,9 +968,7 @@ function App() {
                                 </div>
 
 
-                                {/* ==========================================
-                    DESVIACIÓN COMBINADA
-                ========================================== */}
+                                {/* DESVIACIÓN COMBINADA*/}
 
                                 <div style={cajaEstilo}>
 
@@ -1019,9 +1011,7 @@ function App() {
                                 </div>
 
 
-                                {/* ==========================================
-                    DIFERENCIA DE MEDIAS
-                ========================================== */}
+                                {/*DIFERENCIA DE MEDIAS */}
 
                                 <div style={cajaEstilo}>
 
@@ -1065,9 +1055,7 @@ function App() {
                                 </div>
 
 
-                                {/* ==========================================
-                    ERROR ESTÁNDAR
-                ========================================== */}
+                                {/* ERROR ESTÁNDAR*/}
 
                                 <div style={cajaEstilo}>
 
@@ -1188,9 +1176,7 @@ function App() {
                                 </div>
 
 
-                                {/* ==========================================
-                    MARGEN DE ERROR
-                ========================================== */}
+                                {/*MARGEN DE ERROR*/}
 
                                 <div style={cajaEstilo}>
 
@@ -1234,9 +1220,7 @@ function App() {
                                 </div>
 
 
-                                {/* ==========================================
-                    FÓRMULA FINAL
-                ========================================== */}
+                                {/*FÓRMULA FINAL*/}
 
                                 <div style={cajaEstilo}>
 
@@ -1266,9 +1250,7 @@ function App() {
                                 </div>
 
 
-                                {/* ==========================================
-                    PROCEDIMIENTO FINAL
-                ========================================== */}
+                                {/*PROCEDIMIENTO FINAL*/}
 
                                 <div style={cajaEstilo}>
 
@@ -1321,9 +1303,7 @@ function App() {
                                 </div>
 
 
-                                {/* ==========================================
-                    RESULTADO FINAL
-                ========================================== */}
+                                {/* RESULTADO FINAL*/}
 
                                 <div className="resultado-principal">
 
@@ -1347,9 +1327,7 @@ function App() {
                                 </div>
 
 
-                                {/* ==========================================
-                    INTERPRETACIÓN
-                ========================================== */}
+                                {/* INTERPRETACIÓN*/}
 
                                 <div style={cajaEstilo}>
 
@@ -1422,7 +1400,10 @@ function App() {
                             poblacional de <strong>25</strong>, utilizando un
                             nivel de significancia del <strong>5%</strong>
                             (prueba unilateral izquierda: H0: μ ≥ 25 vs
-                            H1: μ &lt; 25).
+                            H1: μ &lt; 25). Como la desviación estándar
+                            poblacional es desconocida y se estima a partir
+                            de la muestra, se utiliza la distribución{" "}
+                            <strong>t de Student</strong>.
                         </p>
 
                         {hipotesis && (
@@ -1431,9 +1412,15 @@ function App() {
                                 {/*DATOS*/}
 
                                 <div style={cajaEstilo}>
+
                                     <span style={tituloCajaEstilo}>
                                         DATOS
                                     </span>
+
+                                    <p style={textoClaro}>
+                                        Se toma la muestra de 40 personas y se calcula
+                                        el IMC promedio y su desviación estándar.
+                                    </p>
 
                                     <div className="grid-resultados">
 
@@ -1467,25 +1454,45 @@ function App() {
                                             valor={hipotesis.gradosLibertad}
                                         />
 
-                                        <Dato
-                                            titulo="H0"
-                                            valor={hipotesis.hipotesisNula}
-                                        />
-
-                                        <Dato
-                                            titulo="H1"
-                                            valor={hipotesis.hipotesisAlternativa}
-                                        />
-
                                     </div>
+
+                                    <p style={{ marginTop: "16px", ...textoClaro }}>
+                                        Hipótesis (prueba unilateral izquierda):
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            gap: "24px",
+                                            flexWrap: "wrap"
+                                        }}
+                                    >
+                                        <strong style={textoFuerte}>
+                                            H0: {hipotesis.hipotesisNula}
+                                        </strong>
+
+                                        <strong style={textoFuerte}>
+                                            H1: {hipotesis.hipotesisAlternativa}
+                                        </strong>
+                                    </div>
+
                                 </div>
 
                                 {/*FÓRMULA*/}
 
                                 <div style={cajaEstilo}>
+
                                     <span style={tituloCajaEstilo}>
                                         FÓRMULA
                                     </span>
+
+                                    <p style={textoClaro}>
+                                        Como se desconoce la desviación estándar
+                                        poblacional y se estima con la desviación
+                                        muestral, el estadístico de prueba sigue una
+                                        distribución t de Student con gl = n − 1
+                                        grados de libertad:
+                                    </p>
 
                                     <div
                                         style={{
@@ -1499,7 +1506,7 @@ function App() {
                                             color: "#4f46e5"
                                         }}
                                     >
-                                        <span>Z</span>
+                                        <span>t</span>
                                         <span>=</span>
                                         <span
                                             style={{
@@ -1526,9 +1533,63 @@ function App() {
                                     </div>
                                 </div>
 
-                                {/*PROCEDIMIENTO*/}
+                                {/* ==========================================
+                                    GRADOS DE LIBERTAD Y VALOR CRÍTICO
+                                ========================================== */}
 
                                 <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        GRADOS DE LIBERTAD Y VALOR CRÍTICO
+                                    </span>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.2rem",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+                                        <div>
+                                            gl = n − 1 = {hipotesis.n} − 1
+                                        </div>
+
+                                        <div style={{ fontWeight: 700 }}>
+                                            gl = {hipotesis.gradosLibertad}
+                                        </div>
+                                    </div>
+
+                                    <p style={{ marginTop: "16px", ...textoClaro }}>
+                                        Como la prueba es unilateral izquierda, el valor
+                                        crítico t se obtiene con α ={" "}
+                                        {hipotesis.nivelSignificancia} y gl ={" "}
+                                        {hipotesis.gradosLibertad} directamente en la
+                                        cola izquierda de la distribución:
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            textAlign: "center",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.2rem",
+                                            color: "#4f46e5",
+                                            fontWeight: 700
+                                        }}
+                                    >
+                                        t crítico = {hipotesis.tCritico.toFixed(4)}
+                                    </div>
+                                </div>
+
+                                {/* ==========================================
+                                    PROCEDIMIENTO
+                                ========================================== */}
+
+                                <div style={cajaEstilo}>
+
                                     <span style={tituloCajaEstilo}>
                                         PROCEDIMIENTO
                                     </span>
@@ -1546,7 +1607,7 @@ function App() {
                                         }}
                                     >
                                         <div>
-                                            Z = ({hipotesis.mediaMuestral.toFixed(4)}
+                                            t = ({hipotesis.mediaMuestral.toFixed(4)}
                                             {" − "}
                                             {hipotesis.imcPoblacional}) / (
                                             {hipotesis.desviacion.toFixed(4)}
@@ -1555,33 +1616,32 @@ function App() {
                                         </div>
 
                                         <div>
-                                            Z = {(
+                                            t = {(
                                                 hipotesis.mediaMuestral -
                                                 hipotesis.imcPoblacional
-                                            ).toFixed(4)} / {hipotesis.errorEstandar
-                                                ? hipotesis.errorEstandar.toFixed(4)
-                                                : (
-                                                    hipotesis.desviacion /
-                                                    Math.sqrt(hipotesis.n)
-                                                ).toFixed(4)}
+                                            ).toFixed(4)} / {hipotesis.errorEstandar.toFixed(4)}
                                         </div>
 
                                         <div style={{ fontWeight: 700 }}>
-                                            Z = {hipotesis.estadisticoZ.toFixed(4)}
+                                            t = {hipotesis.estadisticoT.toFixed(4)}
                                         </div>
                                     </div>
 
                                     <p style={{ marginTop: "16px", ...textoClaro }}>
-                                        Z = {hipotesis.estadisticoZ.toFixed(4)}{" "}
+                                        t = {hipotesis.estadisticoT.toFixed(4)}{" "}
                                         {hipotesis.rechazarHipotesis
                                             ? "es menor que"
                                             : "no es menor que"}{" "}
-                                        Z crítico ={" "}
+                                        t crítico ={" "}
                                         <strong style={textoFuerte}>
-                                            {hipotesis.zCritico.toFixed(4)}
+                                            {hipotesis.tCritico.toFixed(4)}
                                         </strong>
                                     </p>
                                 </div>
+
+                                {/* ==========================================
+                                    RESULTADO FINAL
+                                ========================================== */}
 
                                 <div className="resultado-principal">
 
@@ -2028,8 +2088,8 @@ function App() {
                                     </strong>
 
                                     <p>
-                                        Z ={" "}
-                                        {hipotesis.estadisticoZ.toFixed(4)}
+                                        t ={" "}
+                                        {hipotesis.estadisticoT.toFixed(4)}
                                         {"   |   "}
                                         p ={" "}
                                         {hipotesis.pValue.toFixed(4)}

@@ -400,7 +400,8 @@ async function intervaloConfianzaEstatura(nivelConfianza = 0.98) {
     };
 }
 
-// g) PRUEBA DE HIPÓTESIS DEL IMC
+// g) PRUEBA DE HIPÓTESIS DEL IMC (t de Student, muestra pequeña / desviación
+//    poblacional desconocida — se estima con la desviación muestral)
 async function pruebaHipotesisIMC(
     imcPoblacional = 25,
     nivelSignificancia = 0.05
@@ -426,39 +427,41 @@ async function pruebaHipotesisIMC(
     const desviacion =
         Number(datos.desviacion);
 
-    // Prueba de una cola (unilateral izquierda)
+    // Prueba de una cola (unilateral izquierda), con estadístico t
     //
     // H0: μ >= IMC poblacional
     // H1: μ < IMC poblacional
+    //
+    // Se usa la distribución t de Student porque la desviación estándar
+    // poblacional es desconocida y se estima a partir de la muestra.
 
     const errorEstandar =
         desviacion / Math.sqrt(n);
 
-    const z =
+    const t =
         (mediaMuestral - imcPoblacional) /
         errorEstandar;
 
     const gradosLibertad =
         n - 1;
 
-    // P-value
+    // P-value: P(T <= t) con gl = n - 1
 
     const pValue =
-        jStat.normal.cdf(z, 0, 1);
+        jStat.studentt.cdf(t, gradosLibertad);
 
-    // Z crítico
+    // t crítico (unilateral izquierda, negativo)
 
-    const zCritico =
-        jStat.normal.inv(
+    const tCritico =
+        jStat.studentt.inv(
             nivelSignificancia,
-            0,
-            1
+            gradosLibertad
         );
 
-    // Decisión
+    // Decisión: se rechaza H0 si t cae en la región de rechazo (t < tCritico)
 
     const rechazarHipotesis =
-        z < zCritico;
+        t < tCritico;
 
     return {
 
@@ -469,7 +472,7 @@ async function pruebaHipotesisIMC(
             `μ < ${imcPoblacional}`,
 
         tipoPrueba:
-            "unilateral izquierda (Z, muestra grande)",
+            "unilateral izquierda (t de Student)",
 
         imcPoblacional,
 
@@ -483,11 +486,11 @@ async function pruebaHipotesisIMC(
 
         errorEstandar,
 
-        estadisticoZ: z,
+        estadisticoT: t,
 
         gradosLibertad,
 
-        zCritico,
+        tCritico,
 
         pValue,
 
