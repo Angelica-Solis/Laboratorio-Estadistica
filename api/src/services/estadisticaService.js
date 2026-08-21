@@ -246,9 +246,7 @@ async function datosPoblacion() {
 
 // f) INTERVALO DE CONFIANZA PARA LA DIFERENCIA DE ESTATURAS
 
-async function intervaloConfianzaEstatura(
-    nivelConfianza = 0.95
-) {
+async function intervaloConfianzaEstatura(nivelConfianza = 0.98) {
     const pool = await poolPromise;
 
     const result = await pool.request().query(`
@@ -262,70 +260,99 @@ async function intervaloConfianzaEstatura(
         GROUP BY Sexo
     `);
 
-    const hombres = result.recordset.find(
-        x => x.Sexo === "M"
-    );
+    const mujeres = result.recordset.find(x => x.Sexo === "F");
+    const hombres = result.recordset.find(x => x.Sexo === "M");
 
-    const mujeres = result.recordset.find(
-        x => x.Sexo === "F"
-    );
 
-    const nHombres = Number(hombres.n);
     const nMujeres = Number(mujeres.n);
+    const nHombres = Number(hombres.n);
 
-    const mediaHombres = Number(hombres.media);
+
     const mediaMujeres = Number(mujeres.media);
+    const mediaHombres = Number(hombres.media);
 
-    const sdHombres = Number(hombres.desviacion);
+
     const sdMujeres = Number(mujeres.desviacion);
+    const sdHombres = Number(hombres.desviacion);
 
-    // Diferencia: hombres - mujeres
+    // Diferencia de medias: Mujeres - Hombres
 
-    const diferencia =
-        mediaHombres - mediaMujeres;
+    const diferencia = mediaMujeres - mediaHombres;
 
-    // Error estándar de Welch
+    // Varianzas muestrales
 
-    const errorEstandar = Math.sqrt(
-        (sdHombres ** 2 / nHombres) +
-        (sdMujeres ** 2 / nMujeres)
-    );
+    const varianzaMujeres = sdMujeres ** 2;
+    const varianzaHombres = sdHombres ** 2;
 
-    // Grados de libertad de Welch
 
-    const numerador =
-        (
-            (sdHombres ** 2 / nHombres) +
-            (sdMujeres ** 2 / nMujeres)
-        ) ** 2;
-
-    const denominador =
-        (
-            (sdHombres ** 2 / nHombres) ** 2 /
-            (nHombres - 1)
-        ) +
-        (
-            (sdMujeres ** 2 / nMujeres) ** 2 /
-            (nMujeres - 1)
-        );
+    // Grados de libertad
 
     const gradosLibertad =
-        numerador / denominador;
+        nMujeres + nHombres - 2;
 
-    // Alfa
+
+    // Varianza combinada
+
+
+    const varianzaCombinada =
+        (
+            (nMujeres - 1) * varianzaMujeres +
+            (nHombres - 1) * varianzaHombres
+        )
+        /
+        gradosLibertad;
+
+
+    // Desviación estándar combinada
+
+
+    const desviacionCombinada =
+        Math.sqrt(varianzaCombinada);
+
+
+    // Nivel de error
+
 
     const alfa =
         1 - nivelConfianza;
 
-    // Valor crítico bilateral
+    const alfaDosColas =
+        alfa / 2;
+
+    const probabilidadAcumulada =
+        1 - alfaDosColas;
+
+
+    // Valor crítico t de Student
+
 
     const tCritico = jStat.studentt.inv(
-        1 - alfa / 2,
+        probabilidadAcumulada,
         gradosLibertad
     );
 
+
+
+    // Error estándar para dos medias con varianzas desconocidas e iguales
+
+
+    const errorEstandar =
+        desviacionCombinada *
+        Math.sqrt(
+            (1 / nMujeres) +
+            (1 / nHombres)
+        );
+
+
+    // Margen de error
+
+
     const margenError =
         tCritico * errorEstandar;
+
+
+    // Intervalo de confianza
+
 
     const limiteInferior =
         diferencia - margenError;
@@ -333,33 +360,48 @@ async function intervaloConfianzaEstatura(
     const limiteSuperior =
         diferencia + margenError;
 
+
     return {
         nivelConfianza: nivelConfianza * 100,
-        alfa,
 
-        hombres: {
-            n: nHombres,
-            promedio: mediaHombres,
-            desviacion: sdHombres
-        },
+        alfa,
+        alfaDosColas,
+        probabilidadAcumulada,
 
         mujeres: {
             n: nMujeres,
             promedio: mediaMujeres,
-            desviacion: sdMujeres
+            desviacion: sdMujeres,
+            varianza: varianzaMujeres
+        },
+
+        hombres: {
+            n: nHombres,
+            promedio: mediaHombres,
+            desviacion: sdHombres,
+            varianza: varianzaHombres
         },
 
         diferencia,
+
+        varianzaCombinada,
+        desviacionCombinada,
+
         errorEstandar,
+
         gradosLibertad,
+
         tCritico,
+
         margenError,
+
         limiteInferior,
         limiteSuperior
     };
 }
 
-// g) PRUEBA DE HIPÓTESIS DEL IMC
+// g) PRUEBA DE HIPÓTESIS DEL IMC (t de Student, muestra pequeña / desviación
+//    poblacional desconocida — se estima con la desviación muestral)
 async function pruebaHipotesisIMC(
     imcPoblacional = 25,
     nivelSignificancia = 0.05
@@ -385,39 +427,41 @@ async function pruebaHipotesisIMC(
     const desviacion =
         Number(datos.desviacion);
 
-    // Prueba de una cola (unilateral izquierda)
+    // Prueba de una cola (unilateral izquierda), con estadístico t
     //
     // H0: μ >= IMC poblacional
     // H1: μ < IMC poblacional
+    //
+    // Se usa la distribución t de Student porque la desviación estándar
+    // poblacional es desconocida y se estima a partir de la muestra.
 
     const errorEstandar =
         desviacion / Math.sqrt(n);
 
-    const z =
+    const t =
         (mediaMuestral - imcPoblacional) /
         errorEstandar;
 
     const gradosLibertad =
         n - 1;
 
-    // P-value
+    // P-value: P(T <= t) con gl = n - 1
 
     const pValue =
-        jStat.normal.cdf(z, 0, 1);
+        jStat.studentt.cdf(t, gradosLibertad);
 
-    // Z crítico
+    // t crítico (unilateral izquierda, negativo)
 
-    const zCritico =
-        jStat.normal.inv(
+    const tCritico =
+        jStat.studentt.inv(
             nivelSignificancia,
-            0,
-            1
+            gradosLibertad
         );
 
-    // Decisión
+    // Decisión: se rechaza H0 si t cae en la región de rechazo (t < tCritico)
 
     const rechazarHipotesis =
-        z < zCritico;
+        t < tCritico;
 
     return {
 
@@ -428,7 +472,7 @@ async function pruebaHipotesisIMC(
             `μ < ${imcPoblacional}`,
 
         tipoPrueba:
-            "unilateral izquierda (Z, muestra grande)",
+            "unilateral izquierda (t de Student)",
 
         imcPoblacional,
 
@@ -442,11 +486,11 @@ async function pruebaHipotesisIMC(
 
         errorEstandar,
 
-        estadisticoZ: z,
+        estadisticoT: t,
 
         gradosLibertad,
 
-        zCritico,
+        tCritico,
 
         pValue,
 
@@ -455,12 +499,10 @@ async function pruebaHipotesisIMC(
         conclusion:
             rechazarHipotesis
 
-                ? `Se rechaza H0: con un ${
-                    nivelSignificancia * 100
+                ? `Se rechaza H0: con un ${nivelSignificancia * 100
                 }% de significancia hay evidencia suficiente de que el IMC promedio de la muestra es menor (mejor) que el poblacional de ${imcPoblacional}.`
 
-                : `No se rechaza H0: con un ${
-                    nivelSignificancia * 100
+                : `No se rechaza H0: con un ${nivelSignificancia * 100
                 }% de significancia NO hay evidencia suficiente de que el IMC promedio de la muestra sea menor (mejor) que el poblacional de ${imcPoblacional}.`
     };
 }

@@ -24,8 +24,6 @@ ChartJS.register(
 const API = "http://localhost:3000/api/estadisticas";
 
 // Estilos reutilizables para los bloques DATOS / FÓRMULA / PROCEDIMIENTO
-// (colores explícitos para que el texto se vea sobre fondo oscuro,
-// sin depender de estilos heredados de App.css)
 
 
 const cajaEstilo = {
@@ -321,7 +319,7 @@ function App() {
                     </>
                 )}
 
-                {/*EJERCICIO 1*/}
+                {/* EJERCICIO 1 */}
 
                 {seccion === "ejercicio1" && (
                     <section className="pagina">
@@ -336,65 +334,1048 @@ function App() {
 
                         <p className="descripcion">
                             Determine el intervalo de confianza al
-                            <strong> 98%</strong> para la diferencia de
-                            los promedios de las estaturas entre hombres
-                            y mujeres.
+                            <strong> 98%</strong> para la diferencia entre
+                            los promedios de estatura de mujeres y hombres.
                         </p>
 
                         {intervalo && (
-                            <div className="resultado-principal">
+                            <>
 
-                                <div className="resultado-grande">
+                                {/* ==========================================
+                    DATOS
+                ========================================== */}
 
-                                    <span>
-                                        Intervalo de confianza del 98%
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        DATOS
                                     </span>
 
-                                    <strong>
-                                        [
-                                        {intervalo.limiteInferior.toFixed(4)}
-                                        {" ; "}
-                                        {intervalo.limiteSuperior.toFixed(4)}
-                                        ]
-                                    </strong>
+                                    <p style={textoClaro}>
+                                        Para resolver el ejercicio se separaron los registros
+                                        de la base de datos según el sexo de cada persona.
+                                        La muestra 1 corresponde a las mujeres y la muestra 2
+                                        corresponde a los hombres.
+                                    </p>
+
+                                    <div className="grid-resultados">
+
+                                        <Dato
+                                            titulo="Nivel de confianza"
+                                            valor={`${intervalo.nivelConfianza}%`}
+                                        />
+
+                                        <Dato
+                                            titulo="n₁ Mujeres"
+                                            valor={intervalo.mujeres.n}
+                                        />
+
+                                        <Dato
+                                            titulo="n₂ Hombres"
+                                            valor={intervalo.hombres.n}
+                                        />
+
+                                    </div>
 
                                 </div>
 
-                                <div className="grid-resultados">
 
-                                    <Dato
-                                        titulo="Promedio hombres"
-                                        valor={`${intervalo.hombres.promedio.toFixed(4)} m`}
-                                    />
+                                {/* ==========================================
+                    MEDIA MUESTRAL
+                ========================================== */}
 
-                                    <Dato
-                                        titulo="Promedio mujeres"
-                                        valor={`${intervalo.mujeres.promedio.toFixed(4)} m`}
-                                    />
+                                <div style={cajaEstilo}>
 
-                                    <Dato
-                                        titulo="Diferencia"
-                                        valor={`${intervalo.diferencia.toFixed(4)} m`}
-                                    />
+                                    <span style={tituloCajaEstilo}>
+                                        MEDIA MUESTRAL
+                                    </span>
 
-                                    <Dato
-                                        titulo="Error estándar"
-                                        valor={intervalo.errorEstandar.toFixed(4)}
-                                    />
+                                    <p style={textoClaro}>
+                                        Para obtener la media muestral de cada grupo,
+                                        se suman todas las estaturas y el resultado se
+                                        divide entre la cantidad de personas de la muestra.
+                                    </p>
 
-                                    <Dato
-                                        titulo="Margen de error"
-                                        valor={intervalo.margenError.toFixed(4)}
-                                    />
+                                    {/* Fórmula x̄ = Σxi / n */}
 
-                                    <Dato
-                                        titulo="Grados de libertad"
-                                        valor={intervalo.gradosLibertad.toFixed(2)}
-                                    />
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            gap: "10px",
+                                            fontSize: "1.4rem",
+                                            fontFamily: "Georgia, serif",
+                                            padding: "10px 0",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+                                        <span>x̄</span>
+
+                                        <span>=</span>
+
+                                        <span
+                                            style={{
+                                                display: "inline-flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                lineHeight: 1.3
+                                            }}
+                                        >
+                                            <span
+                                                style={{
+                                                    padding: "0 8px",
+                                                    borderBottom: "2px solid #4f46e5"
+                                                }}
+                                            >
+                                                Σxᵢ
+                                            </span>
+
+                                            <span style={{ padding: "0 8px" }}>
+                                                n
+                                            </span>
+
+                                        </span>
+
+                                    </div>
+
+                                    <div className="grid-resultados">
+
+                                        <Dato
+                                            titulo="x̄₁ Mujeres"
+                                            valor={`${intervalo.mujeres.promedio.toFixed(4)} m`}
+                                        />
+
+                                        <Dato
+                                            titulo="x̄₂ Hombres"
+                                            valor={`${intervalo.hombres.promedio.toFixed(4)} m`}
+                                        />
+
+                                    </div>
 
                                 </div>
 
-                            </div>
+
+                                {/* ==========================================
+                    VARIANZA Y DESVIACIÓN
+                ========================================== */}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        VARIANZA Y DESVIACIÓN ESTÁNDAR
+                                    </span>
+
+                                    <p style={textoClaro}>
+                                        Una vez obtenida la media de cada grupo,
+                                        se calcula la varianza muestral. La varianza
+                                        permite conocer qué tan dispersas se encuentran
+                                        las estaturas con respecto a la media.
+                                    </p>
+
+                                    {/* Fórmula de varianza */}
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            gap: "10px",
+                                            fontSize: "1.4rem",
+                                            fontFamily: "Georgia, serif",
+                                            padding: "10px 0",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+
+                                        <span>s²</span>
+
+                                        <span>=</span>
+
+                                        <span
+                                            style={{
+                                                display: "inline-flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                lineHeight: 1.3
+                                            }}
+                                        >
+
+                                            <span
+                                                style={{
+                                                    padding: "0 8px",
+                                                    borderBottom: "2px solid #4f46e5"
+                                                }}
+                                            >
+                                                Σ(xᵢ − x̄)²
+                                            </span>
+
+                                            <span style={{ padding: "0 8px" }}>
+                                                n − 1
+                                            </span>
+
+                                        </span>
+
+                                    </div>
+
+                                    <p style={textoClaro}>
+                                        Posteriormente, la desviación estándar se obtiene
+                                        calculando la raíz cuadrada de la varianza.
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            textAlign: "center",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.4rem",
+                                            color: "#4f46e5",
+                                            padding: "10px 0"
+                                        }}
+                                    >
+                                        s = √s²
+                                    </div>
+
+                                    <div className="grid-resultados">
+
+                                        <Dato
+                                            titulo="s₁ Mujeres"
+                                            valor={intervalo.mujeres.desviacion.toFixed(4)}
+                                        />
+
+                                        <Dato
+                                            titulo="s₂ Hombres"
+                                            valor={intervalo.hombres.desviacion.toFixed(4)}
+                                        />
+
+                                        <Dato
+                                            titulo="s₁² Mujeres"
+                                            valor={intervalo.mujeres.varianza.toFixed(5)}
+                                        />
+
+                                        <Dato
+                                            titulo="s₂² Hombres"
+                                            valor={intervalo.hombres.varianza.toFixed(5)}
+                                        />
+
+                                    </div>
+
+                                </div>
+
+
+                                {/* ==========================================
+                    MÉTODO
+                ========================================== */}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        MÉTODO UTILIZADO
+                                    </span>
+
+                                    <p style={textoClaro}>
+                                        El ejercicio busca determinar la diferencia entre
+                                        el promedio de estatura de las mujeres y el promedio
+                                        de estatura de los hombres. Por esta razón se utiliza
+                                        una estimación de la diferencia entre dos medias.
+                                    </p>
+
+                                    <p style={textoClaro}>
+                                        Como el enunciado no proporciona las varianzas
+                                        poblacionales, estas se consideran desconocidas.
+                                        Las varianzas muestrales obtenidas son:
+                                    </p>
+
+                                    <div className="grid-resultados">
+
+                                        <Dato
+                                            titulo="Varianza mujeres s₁²"
+                                            valor={intervalo.mujeres.varianza.toFixed(5)}
+                                        />
+
+                                        <Dato
+                                            titulo="Varianza hombres s₂²"
+                                            valor={intervalo.hombres.varianza.toFixed(5)}
+                                        />
+
+                                    </div>
+
+                                    <p style={textoClaro}>
+                                        Debido a que ambas varianzas tienen valores bastante
+                                        cercanos, para este procedimiento se consideran
+                                        <strong> varianzas poblacionales desconocidas e iguales</strong>.
+                                    </p>
+
+                                    <p style={textoClaro}>
+                                        Por esta razón se utiliza la distribución
+                                        <strong> t de Student</strong>.
+                                    </p>
+
+                                </div>
+
+
+                                {/* ==========================================
+                    GRADOS DE LIBERTAD
+                ========================================== */}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        GRADOS DE LIBERTAD
+                                    </span>
+
+                                    <p style={textoClaro}>
+                                        Para dos muestras independientes con varianzas
+                                        desconocidas e iguales, los grados de libertad se
+                                        calculan mediante:
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.2rem",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+
+                                        <div>
+                                            gl = n₁ + n₂ − 2
+                                        </div>
+
+                                        <div>
+                                            gl = {intervalo.mujeres.n}
+                                            {" + "}
+                                            {intervalo.hombres.n}
+                                            {" − 2"}
+                                        </div>
+
+                                        <div style={{ fontWeight: 700 }}>
+                                            gl = {intervalo.gradosLibertad.toFixed(0)}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/* ==========================================
+                    NIVEL DE ERROR Y COLAS
+                ========================================== */}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        NIVEL DE ERROR Y DIVISIÓN DE COLAS
+                                    </span>
+
+                                    <p style={textoClaro}>
+                                        El nivel de confianza es de
+                                        {" "}
+                                        <strong>{intervalo.nivelConfianza}%</strong>.
+                                        Por lo tanto, el nivel de error corresponde al
+                                        porcentaje restante:
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.2rem",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+
+                                        <div>
+                                            100% − {intervalo.nivelConfianza}% ={" "}
+                                            {(intervalo.alfa * 100).toFixed(0)}%
+                                        </div>
+
+                                        <div>
+                                            α = {intervalo.alfa.toFixed(2)}
+                                        </div>
+
+                                    </div>
+
+                                    <p style={textoClaro}>
+                                        Como el intervalo posee un límite inferior y un
+                                        límite superior, el error se divide entre las dos
+                                        colas de la distribución:
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            gap: "10px",
+                                            fontSize: "1.3rem",
+                                            fontFamily: "Georgia, serif",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+
+                                        <span>α / 2</span>
+
+                                        <span>=</span>
+
+                                        <span
+                                            style={{
+                                                display: "inline-flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                lineHeight: 1.3
+                                            }}
+                                        >
+
+                                            <span
+                                                style={{
+                                                    padding: "0 8px",
+                                                    borderBottom: "2px solid #4f46e5"
+                                                }}
+                                            >
+                                                {intervalo.alfa.toFixed(2)}
+                                            </span>
+
+                                            <span style={{ padding: "0 8px" }}>
+                                                2
+                                            </span>
+
+                                        </span>
+
+                                        <span>=</span>
+
+                                        <span style={{ fontWeight: 700 }}>
+                                            {intervalo.alfaDosColas.toFixed(2)}
+                                        </span>
+
+                                    </div>
+
+                                    <p style={textoClaro}>
+                                        Esto significa que existe un
+                                        {" "}
+                                        <strong>
+                                            {(intervalo.alfaDosColas * 100).toFixed(0)}%
+                                        </strong>
+                                        {" "}
+                                        en cada cola.
+                                    </p>
+
+                                    <p style={textoClaro}>
+                                        Para obtener la probabilidad acumulada utilizada
+                                        en la distribución t de Student se suma el 98%
+                                        de confianza con una de las colas:
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.2rem",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+
+                                        <div>
+                                            98% + 1% = 99%
+                                        </div>
+
+                                        <div style={{ fontWeight: 700 }}>
+                                            99% = {intervalo.probabilidadAcumulada.toFixed(2)}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/*T CRÍTICO*/}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        VALOR CRÍTICO t
+                                    </span>
+
+                                    <p style={textoClaro}>
+                                        Como la tabla t de Student utilizada no contiene
+                                        exactamente 38 grados de libertad, se obtiene el valor
+                                        crítico mediante Microsoft Excel.
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.2rem",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+
+                                        <div>
+                                            =INV.T(
+                                            {intervalo.probabilidadAcumulada.toFixed(2)};
+                                            {intervalo.gradosLibertad.toFixed(0)})
+                                        </div>
+
+                                        <div style={{ fontWeight: 700 }}>
+                                            t = {intervalo.tCritico.toFixed(4)}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/* VARIANZA COMBINADA*/}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        VARIANZA COMBINADA
+                                    </span>
+
+                                    <p style={textoClaro}>
+                                        Como se trabaja con dos muestras independientes
+                                        con varianzas desconocidas e iguales, es necesario
+                                        calcular una varianza combinada de ambas muestras.
+                                    </p>
+
+                                    {/* Fórmula general */}
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            gap: "10px",
+                                            fontSize: "1.3rem",
+                                            fontFamily: "Georgia, serif",
+                                            padding: "10px 0",
+                                            color: "#4f46e5",
+                                            flexWrap: "wrap"
+                                        }}
+                                    >
+
+                                        <span>sₚ²</span>
+
+                                        <span>=</span>
+
+                                        <span
+                                            style={{
+                                                display: "inline-flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                lineHeight: 1.4
+                                            }}
+                                        >
+
+                                            <span
+                                                style={{
+                                                    padding: "0 10px",
+                                                    borderBottom: "2px solid #4f46e5"
+                                                }}
+                                            >
+                                                (n₁ − 1)s₁² + (n₂ − 1)s₂²
+                                            </span>
+
+                                            <span style={{ padding: "0 10px" }}>
+                                                n₁ + n₂ − 2
+                                            </span>
+
+                                        </span>
+
+                                    </div>
+
+
+                                    {/* Sustitución */}
+
+                                    <p style={textoClaro}>
+                                        Sustituyendo los valores:
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            gap: "10px",
+                                            fontSize: "1.15rem",
+                                            fontFamily: "Georgia, serif",
+                                            color: "#4f46e5",
+                                            flexWrap: "wrap"
+                                        }}
+                                    >
+
+                                        <span>sₚ²</span>
+
+                                        <span>=</span>
+
+                                        <span
+                                            style={{
+                                                display: "inline-flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                lineHeight: 1.4
+                                            }}
+                                        >
+
+                                            <span
+                                                style={{
+                                                    padding: "0 8px",
+                                                    borderBottom: "2px solid #4f46e5"
+                                                }}
+                                            >
+                                                ({intervalo.mujeres.n} − 1)
+                                                ({intervalo.mujeres.varianza.toFixed(5)})
+                                                {" + "}
+                                                ({intervalo.hombres.n} − 1)
+                                                ({intervalo.hombres.varianza.toFixed(5)})
+                                            </span>
+
+                                            <span style={{ padding: "0 8px" }}>
+                                                {intervalo.gradosLibertad.toFixed(0)}
+                                            </span>
+
+                                        </span>
+
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            textAlign: "center",
+                                            marginTop: "16px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.2rem",
+                                            color: "#4f46e5",
+                                            fontWeight: 700
+                                        }}
+                                    >
+                                        sₚ² = {intervalo.varianzaCombinada.toFixed(5)}
+                                    </div>
+
+                                </div>
+
+
+                                {/* DESVIACIÓN COMBINADA*/}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        DESVIACIÓN ESTÁNDAR COMBINADA
+                                    </span>
+
+                                    <p style={textoClaro}>
+                                        Una vez obtenida la varianza combinada,
+                                        se calcula su raíz cuadrada para obtener
+                                        la desviación estándar combinada.
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.2rem",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+
+                                        <div>
+                                            sₚ = √sₚ²
+                                        </div>
+
+                                        <div>
+                                            sₚ = √{intervalo.varianzaCombinada.toFixed(5)}
+                                        </div>
+
+                                        <div style={{ fontWeight: 700 }}>
+                                            sₚ = {intervalo.desviacionCombinada.toFixed(4)}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/*DIFERENCIA DE MEDIAS */}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        DIFERENCIA ENTRE LAS MEDIAS
+                                    </span>
+
+                                    <p style={textoClaro}>
+                                        Como la muestra 1 corresponde a las mujeres y
+                                        la muestra 2 a los hombres, se calcula:
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.2rem",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+
+                                        <div>
+                                            x̄₁ − x̄₂
+                                        </div>
+
+                                        <div>
+                                            {intervalo.mujeres.promedio.toFixed(4)}
+                                            {" − "}
+                                            {intervalo.hombres.promedio.toFixed(4)}
+                                        </div>
+
+                                        <div style={{ fontWeight: 700 }}>
+                                            x̄₁ − x̄₂ = {intervalo.diferencia.toFixed(4)} m
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/* ERROR ESTÁNDAR*/}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        ERROR ESTÁNDAR
+                                    </span>
+
+                                    <p style={textoClaro}>
+                                        El error estándar para la diferencia entre
+                                        dos medias con varianzas desconocidas e iguales
+                                        se calcula mediante:
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            gap: "8px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.3rem",
+                                            color: "#4f46e5",
+                                            flexWrap: "wrap"
+                                        }}
+                                    >
+
+                                        <span>EE = sₚ √(</span>
+
+                                        {/* 1/n1 */}
+
+                                        <span
+                                            style={{
+                                                display: "inline-flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                lineHeight: 1.2
+                                            }}
+                                        >
+
+                                            <span
+                                                style={{
+                                                    padding: "0 5px",
+                                                    borderBottom: "2px solid #4f46e5"
+                                                }}
+                                            >
+                                                1
+                                            </span>
+
+                                            <span>
+                                                n₁
+                                            </span>
+
+                                        </span>
+
+                                        <span>+</span>
+
+                                        {/* 1/n2 */}
+
+                                        <span
+                                            style={{
+                                                display: "inline-flex",
+                                                flexDirection: "column",
+                                                alignItems: "center",
+                                                lineHeight: 1.2
+                                            }}
+                                        >
+
+                                            <span
+                                                style={{
+                                                    padding: "0 5px",
+                                                    borderBottom: "2px solid #4f46e5"
+                                                }}
+                                            >
+                                                1
+                                            </span>
+
+                                            <span>
+                                                n₂
+                                            </span>
+
+                                        </span>
+
+                                        <span>)</span>
+
+                                    </div>
+
+                                    <p style={textoClaro}>
+                                        Sustituyendo:
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.15rem",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+
+                                        <div>
+                                            EE = {intervalo.desviacionCombinada.toFixed(4)}
+                                            {" × √(1/"}
+                                            {intervalo.mujeres.n}
+                                            {" + 1/"}
+                                            {intervalo.hombres.n}
+                                            {")"}
+                                        </div>
+
+                                        <div style={{ fontWeight: 700 }}>
+                                            EE = {intervalo.errorEstandar.toFixed(4)}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/*MARGEN DE ERROR*/}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        MARGEN DE ERROR
+                                    </span>
+
+                                    <p style={textoClaro}>
+                                        El margen de error se obtiene multiplicando
+                                        el valor crítico t por el error estándar.
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.2rem",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+
+                                        <div>
+                                            E = t × EE
+                                        </div>
+
+                                        <div>
+                                            E = {intervalo.tCritico.toFixed(4)}
+                                            {" × "}
+                                            {intervalo.errorEstandar.toFixed(4)}
+                                        </div>
+
+                                        <div style={{ fontWeight: 700 }}>
+                                            E = {intervalo.margenError.toFixed(4)}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/*FÓRMULA FINAL*/}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        FÓRMULA DEL INTERVALO DE CONFIANZA
+                                    </span>
+
+                                    <p style={textoClaro}>
+                                        Una vez obtenidos todos los datos necesarios,
+                                        se utiliza la fórmula del intervalo de confianza
+                                        para la diferencia entre dos medias con varianzas
+                                        poblacionales desconocidas e iguales:
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            textAlign: "center",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.3rem",
+                                            color: "#4f46e5",
+                                            padding: "12px 0"
+                                        }}
+                                    >
+                                        (x̄₁ − x̄₂) ± t · sₚ · √(1/n₁ + 1/n₂)
+                                    </div>
+
+                                </div>
+
+
+                                {/*PROCEDIMIENTO FINAL*/}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        PROCEDIMIENTO
+                                    </span>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: "12px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.15rem",
+                                            color: "#4f46e5",
+                                            textAlign: "center"
+                                        }}
+                                    >
+
+                                        <div>
+                                            ({intervalo.mujeres.promedio.toFixed(4)}
+                                            {" − "}
+                                            {intervalo.hombres.promedio.toFixed(4)})
+                                            {" ± "}
+                                            {intervalo.tCritico.toFixed(4)}
+                                            {" × "}
+                                            {intervalo.desviacionCombinada.toFixed(4)}
+                                            {" × √(1/"}
+                                            {intervalo.mujeres.n}
+                                            {" + 1/"}
+                                            {intervalo.hombres.n}
+                                            {")"}
+                                        </div>
+
+                                        <div>
+                                            {intervalo.diferencia.toFixed(4)}
+                                            {" ± "}
+                                            {intervalo.margenError.toFixed(4)}
+                                        </div>
+
+                                        <div style={{ fontWeight: 700 }}>
+                                            {intervalo.limiteInferior.toFixed(4)}
+                                            {" < μ₁ − μ₂ < "}
+                                            {intervalo.limiteSuperior.toFixed(4)}
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/* RESULTADO FINAL*/}
+
+                                <div className="resultado-principal">
+
+                                    <div className="resultado-grande">
+
+                                        <span>
+                                            Intervalo de confianza del{" "}
+                                            {intervalo.nivelConfianza}%
+                                        </span>
+
+                                        <strong>
+                                            [
+                                            {intervalo.limiteInferior.toFixed(4)}
+                                            {" ; "}
+                                            {intervalo.limiteSuperior.toFixed(4)}
+                                            ] m
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                {/* INTERPRETACIÓN*/}
+
+                                <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        INTERPRETACIÓN
+                                    </span>
+
+                                    <p style={textoClaro}>
+                                        Con un nivel de confianza del
+                                        {" "}
+                                        <strong>
+                                            {intervalo.nivelConfianza}%
+                                        </strong>
+                                        , se estima que la diferencia entre el promedio
+                                        de estatura de las mujeres y el promedio de estatura
+                                        de los hombres se encuentra entre
+                                        {" "}
+                                        <strong>
+                                            {intervalo.limiteInferior.toFixed(4)} m
+                                        </strong>
+                                        {" "}y{" "}
+                                        <strong>
+                                            {intervalo.limiteSuperior.toFixed(4)} m
+                                        </strong>.
+                                    </p>
+
+                                    <p style={textoClaro}>
+                                        La estimación puntual de la diferencia entre ambas
+                                        medias es de
+                                        {" "}
+                                        <strong>
+                                            {intervalo.diferencia.toFixed(4)} m
+                                        </strong>.
+                                    </p>
+
+                                    <p style={textoClaro}>
+                                        Como el intervalo de confianza incluye el valor 0,
+                                        no se puede afirmar, con un nivel de confianza del
+                                        {" "}
+                                        <strong>
+                                            {intervalo.nivelConfianza}%
+                                        </strong>
+                                        , que exista una diferencia estadísticamente
+                                        significativa entre la estatura promedio de las
+                                        mujeres y la de los hombres.
+                                    </p>
+                                </div>
+                            </>
                         )}
 
                     </section>
@@ -419,7 +1400,10 @@ function App() {
                             poblacional de <strong>25</strong>, utilizando un
                             nivel de significancia del <strong>5%</strong>
                             (prueba unilateral izquierda: H0: μ ≥ 25 vs
-                            H1: μ &lt; 25).
+                            H1: μ &lt; 25). Como la desviación estándar
+                            poblacional es desconocida y se estima a partir
+                            de la muestra, se utiliza la distribución{" "}
+                            <strong>t de Student</strong>.
                         </p>
 
                         {hipotesis && (
@@ -428,9 +1412,15 @@ function App() {
                                 {/*DATOS*/}
 
                                 <div style={cajaEstilo}>
+
                                     <span style={tituloCajaEstilo}>
                                         DATOS
                                     </span>
+
+                                    <p style={textoClaro}>
+                                        Se toma la muestra de 40 personas y se calcula
+                                        el IMC promedio y su desviación estándar.
+                                    </p>
 
                                     <div className="grid-resultados">
 
@@ -464,25 +1454,45 @@ function App() {
                                             valor={hipotesis.gradosLibertad}
                                         />
 
-                                        <Dato
-                                            titulo="H0"
-                                            valor={hipotesis.hipotesisNula}
-                                        />
-
-                                        <Dato
-                                            titulo="H1"
-                                            valor={hipotesis.hipotesisAlternativa}
-                                        />
-
                                     </div>
+
+                                    <p style={{ marginTop: "16px", ...textoClaro }}>
+                                        Hipótesis (prueba unilateral izquierda):
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            gap: "24px",
+                                            flexWrap: "wrap"
+                                        }}
+                                    >
+                                        <strong style={textoFuerte}>
+                                            H0: {hipotesis.hipotesisNula}
+                                        </strong>
+
+                                        <strong style={textoFuerte}>
+                                            H1: {hipotesis.hipotesisAlternativa}
+                                        </strong>
+                                    </div>
+
                                 </div>
 
                                 {/*FÓRMULA*/}
 
                                 <div style={cajaEstilo}>
+
                                     <span style={tituloCajaEstilo}>
                                         FÓRMULA
                                     </span>
+
+                                    <p style={textoClaro}>
+                                        Como se desconoce la desviación estándar
+                                        poblacional y se estima con la desviación
+                                        muestral, el estadístico de prueba sigue una
+                                        distribución t de Student con gl = n − 1
+                                        grados de libertad:
+                                    </p>
 
                                     <div
                                         style={{
@@ -496,7 +1506,7 @@ function App() {
                                             color: "#4f46e5"
                                         }}
                                     >
-                                        <span>Z</span>
+                                        <span>t</span>
                                         <span>=</span>
                                         <span
                                             style={{
@@ -523,9 +1533,63 @@ function App() {
                                     </div>
                                 </div>
 
-                                {/*PROCEDIMIENTO*/}
+                                {/* ==========================================
+                                    GRADOS DE LIBERTAD Y VALOR CRÍTICO
+                                ========================================== */}
 
                                 <div style={cajaEstilo}>
+
+                                    <span style={tituloCajaEstilo}>
+                                        GRADOS DE LIBERTAD Y VALOR CRÍTICO
+                                    </span>
+
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            gap: "10px",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.2rem",
+                                            color: "#4f46e5"
+                                        }}
+                                    >
+                                        <div>
+                                            gl = n − 1 = {hipotesis.n} − 1
+                                        </div>
+
+                                        <div style={{ fontWeight: 700 }}>
+                                            gl = {hipotesis.gradosLibertad}
+                                        </div>
+                                    </div>
+
+                                    <p style={{ marginTop: "16px", ...textoClaro }}>
+                                        Como la prueba es unilateral izquierda, el valor
+                                        crítico t se obtiene con α ={" "}
+                                        {hipotesis.nivelSignificancia} y gl ={" "}
+                                        {hipotesis.gradosLibertad} directamente en la
+                                        cola izquierda de la distribución:
+                                    </p>
+
+                                    <div
+                                        style={{
+                                            textAlign: "center",
+                                            fontFamily: "Georgia, serif",
+                                            fontSize: "1.2rem",
+                                            color: "#4f46e5",
+                                            fontWeight: 700
+                                        }}
+                                    >
+                                        t crítico = {hipotesis.tCritico.toFixed(4)}
+                                    </div>
+                                </div>
+
+                                {/* ==========================================
+                                    PROCEDIMIENTO
+                                ========================================== */}
+
+                                <div style={cajaEstilo}>
+
                                     <span style={tituloCajaEstilo}>
                                         PROCEDIMIENTO
                                     </span>
@@ -543,7 +1607,7 @@ function App() {
                                         }}
                                     >
                                         <div>
-                                            Z = ({hipotesis.mediaMuestral.toFixed(4)}
+                                            t = ({hipotesis.mediaMuestral.toFixed(4)}
                                             {" − "}
                                             {hipotesis.imcPoblacional}) / (
                                             {hipotesis.desviacion.toFixed(4)}
@@ -552,33 +1616,32 @@ function App() {
                                         </div>
 
                                         <div>
-                                            Z = {(
+                                            t = {(
                                                 hipotesis.mediaMuestral -
                                                 hipotesis.imcPoblacional
-                                            ).toFixed(4)} / {hipotesis.errorEstandar
-                                                ? hipotesis.errorEstandar.toFixed(4)
-                                                : (
-                                                    hipotesis.desviacion /
-                                                    Math.sqrt(hipotesis.n)
-                                                ).toFixed(4)}
+                                            ).toFixed(4)} / {hipotesis.errorEstandar.toFixed(4)}
                                         </div>
 
                                         <div style={{ fontWeight: 700 }}>
-                                            Z = {hipotesis.estadisticoZ.toFixed(4)}
+                                            t = {hipotesis.estadisticoT.toFixed(4)}
                                         </div>
                                     </div>
 
                                     <p style={{ marginTop: "16px", ...textoClaro }}>
-                                        Z = {hipotesis.estadisticoZ.toFixed(4)}{" "}
+                                        t = {hipotesis.estadisticoT.toFixed(4)}{" "}
                                         {hipotesis.rechazarHipotesis
                                             ? "es menor que"
                                             : "no es menor que"}{" "}
-                                        Z crítico ={" "}
+                                        t crítico ={" "}
                                         <strong style={textoFuerte}>
-                                            {hipotesis.zCritico.toFixed(4)}
+                                            {hipotesis.tCritico.toFixed(4)}
                                         </strong>
                                     </p>
                                 </div>
+
+                                {/* ==========================================
+                                    RESULTADO FINAL
+                                ========================================== */}
 
                                 <div className="resultado-principal">
 
@@ -1026,8 +2089,8 @@ function App() {
                                     </strong>
 
                                     <p>
-                                        Z ={" "}
-                                        {hipotesis.estadisticoZ.toFixed(4)}
+                                        t ={" "}
+                                        {hipotesis.estadisticoT.toFixed(4)}
                                         {"   |   "}
                                         p ={" "}
                                         {hipotesis.pValue.toFixed(4)}
