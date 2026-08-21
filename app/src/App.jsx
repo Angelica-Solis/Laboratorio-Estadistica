@@ -23,11 +23,10 @@ ChartJS.register(
 
 const API = "http://localhost:3000/api/estadisticas";
 
-// =====================================================
 // Estilos reutilizables para los bloques DATOS / FÓRMULA / PROCEDIMIENTO
 // (colores explícitos para que el texto se vea sobre fondo oscuro,
 // sin depender de estilos heredados de App.css)
-// =====================================================
+
 
 const cajaEstilo = {
     background: "#ffffff",
@@ -53,9 +52,7 @@ const textoFuerte = { color: "#202536" };
 function App() {
     const [seccion, setSeccion] = useState("inicio");
 
-    // =========================
-    // DATOS ESTADÍSTICOS
-    // =========================
+    // DATOS ESTADÍSTICOs
 
     const [estatura, setEstatura] = useState(null);
     const [peso, setPeso] = useState(null);
@@ -63,37 +60,27 @@ function App() {
     const [hipPeso, setHipPeso] = useState([]);
     const [sobrepeso, setSobrepeso] = useState([]);
 
-    // =========================
     // EJERCICIO 1
-    // =========================
 
     const [confianza, setConfianza] = useState(98);
     const [intervalo, setIntervalo] = useState(null);
 
-    // =========================
     // EJERCICIO 2
-    // =========================
 
     const [imcPoblacional, setImcPoblacional] = useState(25);
     const [significancia, setSignificancia] = useState(5);
     const [hipotesis, setHipotesis] = useState(null);
 
-    // =========================
     // INTEGRANTES
-    // =========================
 
     const integrantes = ["María Angélica Solís", "Dereck Alonso Jiménez", "Dilan Sanchez", "Abraham"];
 
-    // =========================
     // ESTADO DE CARGA
-    // =========================
 
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState("");
 
-    // =====================================================
     // CARGA INICIAL
-    // =====================================================
 
     useEffect(() => {
         let activo = true;
@@ -153,9 +140,7 @@ function App() {
         };
     }, []);
 
-    // =====================================================
     // CALCULAR INTERVALO DE CONFIANZA
-    // =====================================================
 
     const calcularIntervalo = async (nivel) => {
         try {
@@ -173,9 +158,7 @@ function App() {
         }
     };
 
-    // =====================================================
     // CALCULAR HIPÓTESIS
-    // =====================================================
 
     const calcularHipotesis = async () => {
         try {
@@ -193,9 +176,7 @@ function App() {
         }
     };
 
-    // =====================================================
     // MENÚ
-    // =====================================================
 
     const menu = [
         ["inicio", "Inicio"],
@@ -204,16 +185,14 @@ function App() {
         ["interactiva", "Parte interactiva"]
     ];
 
-    // =====================================================
     // PANTALLA DE CARGA
-    // =====================================================
 
     if (cargando) {
         return (
             <div className="app">
                 <header className="navbar">
                     <div className="logo">
-                         Laboratorio de Estadística
+                        Laboratorio de Estadística
                     </div>
                 </header>
 
@@ -236,9 +215,7 @@ function App() {
     return (
         <div className="app">
 
-            {/* =================================================
-                NAVBAR
-            ================================================= */}
+            {/*NAVBAR*/}
 
             <header className="navbar">
 
@@ -261,9 +238,7 @@ function App() {
 
             </header>
 
-            {/* =================================================
-                ERROR
-            ================================================= */}
+            {/*ERROR*/}
 
             {error && (
                 <div className="mensaje-error">
@@ -273,9 +248,7 @@ function App() {
 
             <main>
 
-                {/* =================================================
-                    INICIO
-                ================================================= */}
+                {/*INICIO*/}
 
                 {seccion === "inicio" && (
                     <>
@@ -348,9 +321,7 @@ function App() {
                     </>
                 )}
 
-                {/* =================================================
-                    EJERCICIO 1
-                ================================================= */}
+                {/*EJERCICIO 1*/}
 
                 {seccion === "ejercicio1" && (
                     <section className="pagina">
@@ -429,9 +400,7 @@ function App() {
                     </section>
                 )}
 
-                {/* =================================================
-                    EJERCICIO 2
-                ================================================= */}
+                {/*EJERCICIO 2*/}
 
                 {seccion === "ejercicio2" && (
                     <section className="pagina">
@@ -456,66 +425,59 @@ function App() {
                         {hipotesis && (
                             <>
 
-                                {/* ==========================================
-                                    DATOS
-                                ========================================== */}
-{/* ==========================================
-    DATOS
-========================================== */}
+                                {/*DATOS*/}
 
-<div style={cajaEstilo}>
-    <span style={tituloCajaEstilo}>
-        DATOS
-    </span>
+                                <div style={cajaEstilo}>
+                                    <span style={tituloCajaEstilo}>
+                                        DATOS
+                                    </span>
 
-    <div className="grid-resultados">
+                                    <div className="grid-resultados">
 
-        <Dato
-            titulo="Promedio poblacional (μ)"
-            valor={hipotesis.imcPoblacional}
-        />
+                                        <Dato
+                                            titulo="Promedio poblacional (μ)"
+                                            valor={hipotesis.imcPoblacional}
+                                        />
 
-        <Dato
-            titulo="Nivel de significancia (α)"
-            valor={hipotesis.nivelSignificancia}
-        />
+                                        <Dato
+                                            titulo="Nivel de significancia (α)"
+                                            valor={hipotesis.nivelSignificancia}
+                                        />
 
-        <Dato
-            titulo="Tamaño de la muestra (n)"
-            valor={hipotesis.n}
-        />
+                                        <Dato
+                                            titulo="Tamaño de la muestra (n)"
+                                            valor={hipotesis.n}
+                                        />
 
-        <Dato
-            titulo="Media muestral (x̄)"
-            valor={hipotesis.mediaMuestral.toFixed(4)}
-        />
+                                        <Dato
+                                            titulo="Media muestral (x̄)"
+                                            valor={hipotesis.mediaMuestral.toFixed(4)}
+                                        />
 
-        <Dato
-            titulo="Desviación estándar (s)"
-            valor={hipotesis.desviacion.toFixed(4)}
-        />
+                                        <Dato
+                                            titulo="Desviación estándar (s)"
+                                            valor={hipotesis.desviacion.toFixed(4)}
+                                        />
 
-        <Dato
-            titulo="Grados de libertad (gl)"
-            valor={hipotesis.gradosLibertad}
-        />
+                                        <Dato
+                                            titulo="Grados de libertad (gl)"
+                                            valor={hipotesis.gradosLibertad}
+                                        />
 
-        <Dato
-            titulo="H0"
-            valor={hipotesis.hipotesisNula}
-        />
+                                        <Dato
+                                            titulo="H0"
+                                            valor={hipotesis.hipotesisNula}
+                                        />
 
-        <Dato
-            titulo="H1"
-            valor={hipotesis.hipotesisAlternativa}
-        />
+                                        <Dato
+                                            titulo="H1"
+                                            valor={hipotesis.hipotesisAlternativa}
+                                        />
 
-    </div>
-</div>
+                                    </div>
+                                </div>
 
-                                {/* ==========================================
-                                    FÓRMULA
-                                ========================================== */}
+                                {/*FÓRMULA*/}
 
                                 <div style={cajaEstilo}>
                                     <span style={tituloCajaEstilo}>
@@ -561,9 +523,7 @@ function App() {
                                     </div>
                                 </div>
 
-                                {/* ==========================================
-                                    PROCEDIMIENTO
-                                ========================================== */}
+                                {/*PROCEDIMIENTO*/}
 
                                 <div style={cajaEstilo}>
                                     <span style={tituloCajaEstilo}>
@@ -654,9 +614,7 @@ function App() {
                     </section>
                 )}
 
-                {/* =================================================
-                    PARTE INTERACTIVA
-                ================================================= */}
+                {/*PARTE INTERACTIVA*/}
 
                 {seccion === "interactiva" && (
                     <section className="pagina">
@@ -675,9 +633,7 @@ function App() {
                             40 personas de la base de datos.
                         </p>
 
-                        {/* ==========================================
-                            A Y B
-                        ========================================== */}
+                        {/* A Y B */}
 
                         <div className="cards">
 
@@ -757,9 +713,7 @@ function App() {
 
                         </div>
 
-                        {/* ==========================================
-                            D
-                        ========================================== */}
+                        {/*  D */}
 
                         <div className="graficos">
 
@@ -805,9 +759,7 @@ function App() {
 
                             </div>
 
-                            {/* ======================================
-                                C
-                            ====================================== */}
+                            {/* C */}
 
                             <div className="grafico-card">
 
@@ -853,9 +805,7 @@ function App() {
 
                         </div>
 
-                        {/* ==========================================
-                            E
-                        ========================================== */}
+                        {/* E */}
 
                         <div className="grafico-card completo">
 
@@ -893,9 +843,7 @@ function App() {
 
                         </div>
 
-                        {/* ==========================================
-                            F
-                        ========================================== */}
+                        {/* F */}
 
                         <section className="interactivo">
 
@@ -985,9 +933,7 @@ function App() {
 
                         </section>
 
-                        {/* ==========================================
-                            G
-                        ========================================== */}
+                        {/* G */}
 
                         <section className="interactivo">
 
@@ -1104,9 +1050,7 @@ function App() {
     );
 }
 
-// =====================================================
 // COMPONENTE DATO
-// =====================================================
 
 function Dato({ titulo, valor }) {
     return (
@@ -1117,9 +1061,7 @@ function Dato({ titulo, valor }) {
     );
 }
 
-// =====================================================
-// COMPONENTE CARD
-// =====================================================
+
 
 function Card({ titulo, children }) {
     return (
