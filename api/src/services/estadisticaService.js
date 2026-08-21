@@ -1,10 +1,7 @@
 const { sql, poolPromise } = require("../database/connection");
 const { jStat } = require("jstat");
 
-
-// =====================================================
-// a) Promedio de estatura
-// =====================================================
+// a) PROMEDIO DE ESTATURA 
 
 async function promedioEstatura() {
     const pool = await poolPromise;
@@ -21,9 +18,7 @@ async function promedioEstatura() {
 }
 
 
-// =====================================================
-// b) Promedio de peso
-// =====================================================
+// b) PROMEDIO DE PESO
 
 async function promedioPeso() {
     const pool = await poolPromise;
@@ -40,9 +35,7 @@ async function promedioPeso() {
 }
 
 
-// =====================================================
-// c) Hipertensión
-// =====================================================
+// c) HIPERTENSIÓN 
 
 async function hipertension() {
     const pool = await poolPromise;
@@ -133,9 +126,7 @@ async function hipertension() {
 }
 
 
-// =====================================================
-// d) Relación entre hipertensión y peso
-// =====================================================
+// d) RELACIÓN ENTRE HIPERTENSIÓN Y PESO
 
 async function relacionHipertensionPeso() {
     const pool = await poolPromise;
@@ -189,9 +180,7 @@ async function relacionHipertensionPeso() {
 }
 
 
-// =====================================================
-// e) Sobrepeso vs horas de trabajo y profesión
-// =====================================================
+// e) SOBREPESO SEGÚN HORAS DE TRABAJO Y PROFESIÓN
 
 async function relacionSobrepesoTrabajo() {
     const pool = await poolPromise;
@@ -225,9 +214,7 @@ async function relacionSobrepesoTrabajo() {
 }
 
 
-// =====================================================
-// Datos generales de la población
-// =====================================================
+// DATOS GENERALES DE LA POBLACIÓN
 
 async function datosPoblacion() {
     const pool = await poolPromise;
@@ -257,9 +244,7 @@ async function datosPoblacion() {
 }
 
 
-// =====================================================
-// f) Intervalo de confianza para la diferencia de estaturas
-// =====================================================
+// f) INTERVALO DE CONFIANZA PARA LA DIFERENCIA DE ESTATURAS
 
 async function intervaloConfianzaEstatura(
     nivelConfianza = 0.95
@@ -374,11 +359,7 @@ async function intervaloConfianzaEstatura(
     };
 }
 
-
-// =====================================================
-// g) Prueba de hipótesis del IMC
-// =====================================================
-
+// g) PRUEBA DE HIPÓTESIS DEL IMC
 async function pruebaHipotesisIMC(
     imcPoblacional = 25,
     nivelSignificancia = 0.05
@@ -485,9 +466,6 @@ async function pruebaHipotesisIMC(
 }
 
 
-// =====================================================
-// EXPORTACIONES
-// =====================================================
 
 module.exports = {
     promedioEstatura,

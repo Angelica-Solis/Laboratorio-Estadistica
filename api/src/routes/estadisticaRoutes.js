@@ -13,10 +13,7 @@ const {
 
 const router = express.Router();
 
-
-// =====================================================
-// Datos generales de la población
-// =====================================================
+// DATOS GENERALES DE LA POBLACION
 
 router.get("/poblacion", async (req, res) => {
     try {
@@ -34,9 +31,7 @@ router.get("/poblacion", async (req, res) => {
 });
 
 
-// =====================================================
-// a) Promedio de estatura
-// =====================================================
+// a) PROMEDIO DE ESTATURA
 
 router.get("/estatura", async (req, res) => {
     try {
@@ -55,9 +50,7 @@ router.get("/estatura", async (req, res) => {
 });
 
 
-// =====================================================
-// b) Promedio de peso
-// =====================================================
+// b) PROMEDIO DE PESO
 
 router.get("/peso", async (req, res) => {
     try {
@@ -76,9 +69,7 @@ router.get("/peso", async (req, res) => {
 });
 
 
-// =====================================================
-// c) Hipertensión
-// =====================================================
+// c) HIPERTENSION
 
 router.get("/hipertension", async (req, res) => {
     try {
@@ -97,9 +88,7 @@ router.get("/hipertension", async (req, res) => {
 });
 
 
-// =====================================================
-// d) Hipertensión y peso
-// =====================================================
+// d) HIPERTENSION Y PESO
 
 router.get("/hipertension-peso", async (req, res) => {
     try {
@@ -118,9 +107,8 @@ router.get("/hipertension-peso", async (req, res) => {
 });
 
 
-// =====================================================
-// e) Sobrepeso y trabajo
-// =====================================================
+// e) SOBREPESO Y TRABAJO 
+
 
 router.get("/sobrepeso-trabajo", async (req, res) => {
     try {
@@ -139,9 +127,7 @@ router.get("/sobrepeso-trabajo", async (req, res) => {
 });
 
 
-// =====================================================
-// f) Intervalo de confianza
-// =====================================================
+// f) INTERVALO DE CONFIANZA
 
 router.get("/intervalo-estatura", async (req, res) => {
     try {
@@ -178,9 +164,7 @@ router.get("/intervalo-estatura", async (req, res) => {
 });
 
 
-// =====================================================
-// g) Prueba de hipótesis del IMC
-// =====================================================
+// g) PRUEBA DE HIPOTESIS DEL IMC
 
 router.get("/prueba-imc", async (req, res) => {
     try {
