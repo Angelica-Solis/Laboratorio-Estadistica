@@ -682,6 +682,7 @@ function App() {
                                 )}
 
                             </Card>
+                            {/*  C */}
 
                             <Card titulo="C. Hipertensión">
 
